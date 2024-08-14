@@ -1,0 +1,44 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+</h:head>
+
+<h:body>
+
+	<h:form id="formFiltro" target="_blank">
+		<p:growl></p:growl>
+
+		<p:panelGrid columns="3" layout="grid"
+			columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+			contentStyleClass="p-align-baseline ui-fluid">
+
+			<p:outputLabel value="Posto"></p:outputLabel>
+			<p:outputLabel value="Prédio"></p:outputLabel>
+			<p:outputLabel value=""></p:outputLabel>
+
+			<p:autoComplete dropdown="true" multiple="false" 
+					forceSelection="true" var="posto" itemLabel="#{posto.nome}"
+					itemValue="#{posto}" value="#{locaisAgrupaPredioPostoController.postoSelecionado}"
+					converter="postoConverter"
+					completeMethod="#{locaisAgrupaPredioPostoController.postos}" />
+
+			<p:autoComplete dropdown="true" multiple="false" 
+					forceSelection="true" var="predio" itemLabel="#{predio.descricao}"
+					itemValue="#{predio}" value="#{locaisAgrupaPredioPostoController.predioSelecionado}"
+					converter="predioConverter"
+					completeMethod="#{locaisAgrupaPredioPostoController.predios}" />
+		</p:panelGrid>
+		<p:panel>
+			<p:commandButton value="Gerar relatório" ajax="false"
+				action="#{locaisAgrupaPredioPostoController.gerar}"
+				icon="pi pi-print"></p:commandButton>
+		</p:panel>
+
+	</h:form>
+
+</h:body>
+</html>

@@ -1,0 +1,123 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+<h:head>
+</h:head>
+
+<h:body onload="#{vigilanteController.init()}">
+    <!-- Painel de consulta -->
+    <p:panel header="Cadastro de vigilantes" id="consultar" visible="#{!vigilanteController.editando}">
+        <h:form>
+            <p:panelGrid style="margin-bottom: 1em">
+                <p:commandButton value="Incluir"
+                                 action="#{vigilanteController.incluir}" update="consultar editar"
+                                 icon="pi pi-plus"></p:commandButton>
+
+                <p:commandButton value="Alterar"
+                                 action="#{vigilanteController.alterar}" update="consultar editar"
+                                 icon="pi pi-pencil"
+                                 disabled="#{vigilanteController.selecionado==null}"></p:commandButton>
+
+                <p:commandButton value="Excluir"
+                                 action="#{vigilanteController.excluir}" update="consultar"
+                                 icon="pi pi-trash"
+                                 disabled="#{vigilanteController.selecionado==null}"
+                                 onclick="return confirm('Tem certeza que deseja excluir?')"></p:commandButton>
+            </p:panelGrid>
+
+            <p:dataTable var="o" value="#{vigilanteController.lista}"
+                         emptyMessage="Nada para mostrar!" selectionMode="single"
+                         selection="#{vigilanteController.selecionado}" rowKey="#{o.id}"
+                         rows="10" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}
+				{LastPageLink} "
+                         rowsPerPageTemplate="10,25,50,100"
+                         currentPageReportTemplate="Listando de {startRecord} até {endRecord} de {totalRecords}"
+                         paginatorPosition="bottom">
+
+                <p:ajax event="rowSelect" update="consultar"></p:ajax>
+                <p:ajax event="rowUnselect" update="consultar"></p:ajax>
+
+                <p:column headerText="Código" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="exact">
+                    <p:outputLabel value="#{o.id}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Nome" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="contains">
+                    <p:outputLabel value="#{o.nome}"></p:outputLabel>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:panel>
+
+    <!-- Painel de edição -->
+    <p:panel header="Cadastro de vigilantes" id="editar" visible="#{vigilanteController.editando}">
+        <h:form>
+            <p:growl></p:growl>
+            <p:panelGrid columns="3" layout="grid"
+                         columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+                         contentStyleClass="p-align-baseline ui-fluid">
+                <p:outputLabel value="Nome"></p:outputLabel>
+                <p:outputLabel value="Celular"></p:outputLabel>
+                <p:outputLabel value="E-mail"></p:outputLabel>
+
+                <p:inputText value="#{vigilanteController.selecionado.nome}"></p:inputText>
+
+                <p:inputMask value="#{vigilanteController.selecionado.celular}"
+                             mask="(99) 99999-9999"/>
+
+                <p:inputText value="#{vigilanteController.selecionado.email}"></p:inputText>
+
+                <p:outputLabel value="Senha"></p:outputLabel>
+                <p:outputLabel value="CPF"></p:outputLabel>
+                <p:outputLabel value="RG"></p:outputLabel>
+
+                <p:inputText value="#{vigilanteController.selecionado.senha}" type="password"></p:inputText>
+
+                <p:inputMask id="Celular"
+                             value="#{vigilanteController.selecionado.cpf}"
+                             mask="999.999.999-99"/>
+
+                <p:inputMask id="RG" value="#{vigilanteController.selecionado.rg}"
+                             mask="99.999.999-9" required="true" requiredMessage="RG INVÁLIDO!"/>
+
+                <p:outputLabel value=" Posto"/>
+                <p:outputLabel value="Supervisor"/>
+                <p:outputLabel value="#{vigilanteController.selecionado.id != null ? 'Data inativo':''}"/>
+
+                <p:autoComplete dropdown="true" multiple="false" size="30"
+                                forceSelection="true" var="posto" itemLabel="#{posto.nome}"
+                                itemValue="#{posto}"
+                                value="#{vigilanteController.selecionado.posto}"
+                                converter="postoConverter"
+                                completeMethod="#{vigilanteController.postos}"/>
+
+                <p:autoComplete dropdown="true" multiple="false" size="30"
+                                forceSelection="true" var="supervisor"
+                                itemLabel="#{supervisor.nome}" itemValue="#{supervisor}"
+                                value="#{vigilanteController.selecionado.supervisor}"
+                                converter="supervisorConverter"
+                                completeMethod="#{vigilanteController.supervisores}"/>
+
+                <p:calendar
+                        value="#{vigilanteController.selecionado.dataInativo}"
+                        pattern="dd/MM/yyyy" rendered="#{vigilanteController.selecionado.id != null}"></p:calendar>
+
+            </p:panelGrid>
+
+            <p:panel>
+                <p:commandButton value="Salvar"
+                                 action="#{vigilanteController.salvar}" update="consultar editar"
+                                 icon="pi pi-save"></p:commandButton>
+                <p:commandButton value="Cancelar"
+                                 action="#{vigilanteController.cancelar}" immediate="true"
+                                 icon="pi pi-times" update="consultar editar"></p:commandButton>
+            </p:panel>
+
+        </h:form>
+    </p:panel>
+
+
+</h:body>
+</html>

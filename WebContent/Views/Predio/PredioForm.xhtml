@@ -1,0 +1,103 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+<h:body onload="#{predioController.init()}">
+    <p:growl id="erro"></p:growl>
+    <!-- Painel de consulta -->
+    <p:panel header="Cadastro de predios" id="consultar" visible="#{!predioController.editando}">
+        <h:form>
+
+            <p:panelGrid style="margin-bottom: 1em">
+                <p:commandButton value="Incluir" action="#{predioController.incluir}"
+                                 update="consultar editar" icon="pi pi-plus"></p:commandButton>
+
+                <p:commandButton value="Alterar" action="#{predioController.alterar}"
+                                 update="consultar editar" icon="pi pi-pencil"
+                                 disabled="#{predioController.selecionado==null}"></p:commandButton>
+
+                <p:commandButton value="Excluir" action="#{predioController.excluir}"
+                                 update="consultar erro" icon="pi pi-trash"
+                                 disabled="#{predioController.selecionado==null}"
+                                 onclick="return confirm('Tem certeza que deseja excluir?')"></p:commandButton>
+            </p:panelGrid>
+
+            <p:dataTable var="o" value="#{predioController.lista}"
+                         emptyMessage="Nada para mostrar!" selectionMode="single"
+                         selection="#{predioController.selecionado}" rowKey="#{o.id}"
+                         rows="10" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}
+				{LastPageLink} "
+                         rowsPerPageTemplate="10,25,50,100"
+                         currentPageReportTemplate="Listando de {startRecord} até {endRecord} de {totalRecords}"
+                         paginatorPosition="bottom">
+
+                <p:ajax event="rowSelect" update="consultar"></p:ajax>
+                <p:ajax event="rowUnselect" update="consultar"></p:ajax>
+
+                <p:column headerText="Código" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="exact">
+                    <p:outputLabel value="#{o.id}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Sigla" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="contains">
+                    <p:outputLabel value="#{o.sigla}"></p:outputLabel>
+                </p:column>
+
+                <p:column headerText="Descrição" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="contains">
+                    <p:outputLabel value="#{o.descricao}"></p:outputLabel>
+                </p:column>
+
+                <p:column headerText="Posto" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="contains">
+                    <p:outputLabel value="#{o.posto.nome}"></p:outputLabel>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:panel>
+
+    <!-- Painel de edição -->
+    <p:panel header="Cadastro de predios" id="editar" visible="#{predioController.editando}">
+        <h:form>
+            <p:panelGrid columns="3" layout="grid"
+                         columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+                         contentStyleClass="p-align-baseline ui-fluid">
+
+                <p:outputLabel value="Posto"/>
+                <p:outputLabel value="Sigla"></p:outputLabel>
+                <p:outputLabel value="Descrição"></p:outputLabel>
+
+                <p:autoComplete dropdown="true" multiple="false"
+                                forceSelection="true" var="posto" itemLabel="#{posto.nome}"
+                                itemValue="#{posto}" value="#{predioController.selecionado.posto}"
+                                converter="postoConverter"
+                                completeMethod="#{predioController.postos}"/>
+
+                <p:inputText value="#{predioController.selecionado.sigla}"></p:inputText>
+
+                <p:inputTextarea rows="5" cols="30" value="#{predioController.selecionado.descricao}"
+                                 queryDelay="750" minQueryLength="4"> <p:ajax event="itemSelect"
+                                                                              listener="#{inputTextareaView.onSelect}"/>
+                </p:inputTextarea>
+
+            </p:panelGrid>
+
+            <p:panel>
+                <p:commandButton value="Salvar" action="#{predioController.salvar}"
+                                 update="consultar editar erro" icon="pi pi-save"></p:commandButton>
+                <p:commandButton value="Cancelar"
+                                 action="#{predioController.cancelar}" immediate="true"
+                                 icon="pi pi-times" update="consultar editar"></p:commandButton>
+            </p:panel>
+
+        </h:form>
+    </p:panel>
+
+
+</h:body>
+</html>

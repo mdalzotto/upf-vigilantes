@@ -1,0 +1,124 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+	<style type="text/css">
+.ui-panelgrid.showcase-text-align-center .ui-grid-responsive .ui-panelgrid-cell
+	{
+	text-align: center;
+}
+
+.customPanelGrid .ui-panelgrid-content {
+	align-items: center;
+}
+</style>
+</h:head>
+
+<h:body onload="#{adminController.init()}">
+	<!-- Painel de consulta -->
+	<p:panel header="Cadastro de administradores" id="consultar"
+		visible="#{!adminController.editando}">
+		<h:form>
+
+			<p:panelGrid style="margin-bottom: 1em">
+				<p:commandButton value="Incluir" action="#{adminController.incluir}"
+					update="consultar editar" icon="pi pi-plus"></p:commandButton>
+
+				<p:commandButton value="Alterar" action="#{adminController.alterar}"
+					update="consultar editar" icon="pi pi-pencil"
+					disabled="#{adminController.selecionado==null}"></p:commandButton>
+
+				<p:commandButton value="Excluir" action="#{adminController.excluir}"
+					update="consultar" icon="pi pi-trash"
+					disabled="#{adminController.selecionado==null}"
+					onclick="return confirm('Tem certeza que deseja excluir?')"></p:commandButton>
+			</p:panelGrid>
+
+			<p:dataTable var="o" value="#{adminController.lista}"
+				emptyMessage="Nada para mostrar!" selectionMode="single"
+				selection="#{adminController.selecionado}" rowKey="#{o.id}"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}
+				{LastPageLink} "
+				rowsPerPageTemplate="10,25,50,100"
+				currentPageReportTemplate="Listando de {startRecord} até {endRecord} de {totalRecords}"
+				paginatorPosition="bottom">
+
+				<p:ajax event="rowSelect" update="consultar"></p:ajax>
+				<p:ajax event="rowUnselect" update="consultar"></p:ajax>
+
+				<p:column headerText="Código" sortBy="#{o.id}" filterBy="#{o.id}"
+					filterMatchMode="exact">
+					<p:outputLabel value="#{o.id}"></p:outputLabel>
+				</p:column>
+
+				<p:column headerText="Nome" sortBy="#{o.id}" filterBy="#{o.id}"
+					filterMatchMode="contains">
+					<p:outputLabel value="#{o.nome}"></p:outputLabel>
+				</p:column>
+
+				<p:column headerText="Celular" sortBy="#{o.id}" filterBy="#{o.id}"
+					filterMatchMode="contains">
+					<p:outputLabel value="#{o.celular}"></p:outputLabel>
+				</p:column>
+
+				<p:column headerText="E-mail" sortBy="#{o.id}" filterBy="#{o.id}"
+					filterMatchMode="contains">
+					<p:outputLabel value="#{o.email}"></p:outputLabel>
+				</p:column>
+
+			</p:dataTable>
+		</h:form>
+	</p:panel>
+
+	<!-- Painel de edição -->
+	<p:panel header="Cadastro de administradores" id="editar"
+		visible="#{adminController.editando}">
+
+		<h:form>
+			<p:growl></p:growl>
+			<p:panelGrid columns="3" layout="grid"
+				columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+				contentStyleClass="p-align-baseline ui-fluid">
+
+				<p:outputLabel value="Nome"></p:outputLabel>
+				<p:outputLabel value="Celular"></p:outputLabel>
+				<p:outputLabel value="E-mail"></p:outputLabel>
+
+				<p:inputText value="#{adminController.selecionado.nome}"></p:inputText>
+				<p:inputMask value="#{adminController.selecionado.celular}"
+					mask="(99) 99999-9999" />
+				<p:inputText value="#{adminController.selecionado.email}"></p:inputText>
+
+				<p:outputLabel value="Senha"></p:outputLabel>
+				<p:outputLabel value="CPF"></p:outputLabel>
+				<p:outputLabel value="RG"></p:outputLabel>
+
+				<p:inputText value="#{adminController.selecionado.senha}" type="password"></p:inputText>
+
+				<p:inputMask value="#{adminController.selecionado.cpf}"
+					mask="999.999.999-99"></p:inputMask>
+				<p:inputMask value="#{adminController.selecionado.rg}"
+					mask="99.999.999-9" required="true" requiredMessage="RG Inválido"></p:inputMask>
+
+			</p:panelGrid>
+
+			<p:panel>
+				<p:commandButton value="Salvar" action="#{adminController.salvar}"
+					update="consultar editar" icon="pi pi-save"></p:commandButton>
+
+				<p:commandButton value="Cancelar"
+					action="#{adminController.cancelar}" immediate="true"
+					icon="pi pi-times" update="consultar editar"></p:commandButton>
+			</p:panel>
+
+		</h:form>
+
+
+	</p:panel>
+
+
+</h:body>
+</html>

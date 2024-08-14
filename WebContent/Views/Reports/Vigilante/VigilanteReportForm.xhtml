@@ -1,0 +1,38 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+</h:head>
+
+<h:body>
+    <p:panel header="Relatório de vigilantes">
+        <h:form id="formFiltro" target="_blank">
+            <p:growl></p:growl>
+
+            <p:panelGrid columns="3" layout="grid"
+                         columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+                         contentStyleClass="p-align-baseline ui-fluid">
+
+                <p:outputLabel for="ativo" value="Ativos"></p:outputLabel>
+                <p:outputLabel value=""></p:outputLabel>
+                <p:outputLabel value=""></p:outputLabel>
+
+                <p:selectOneMenu id="ativo" value="#{vigilanteReportController.ativo}">
+                    <f:selectItem itemLabel="Sim" itemValue="sim"/>
+                    <f:selectItem itemLabel="Não" itemValue="nao"/>
+                </p:selectOneMenu>
+
+            </p:panelGrid>
+            <p:panel>
+                <p:commandButton value="Gerar" ajax="false"
+                                 action="#{vigilanteReportController.gerar}"
+                                 icon="pi pi-print"></p:commandButton>
+            </p:panel>
+
+        </h:form>
+    </p:panel>
+</h:body>
+</html>

@@ -1,0 +1,108 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+<h:body onload="#{supervisorController.init()}">
+	<h3 style="margin-top: 0"></h3>
+	<p:panel header="Cadastro de supervisores" id="consultar" visible="#{!supervisorController.editando}">
+		<h:form>
+			<p:panelGrid style="margin-bottom: 1em">
+			<p:commandButton value="Incluir"
+				action="#{supervisorController.incluir}" update="consultar editar"
+				icon="pi pi-plus"></p:commandButton>
+
+			<p:commandButton value="Alterar"
+				action="#{supervisorController.alterar}" update="consultar editar"
+				icon="pi pi-pencil"
+				disabled="#{supervisorController.selecionado==null}"></p:commandButton>
+
+			<p:commandButton value="Excluir"
+				action="#{supervisorController.excluir}" update="consultar"
+				icon="pi pi-trash"
+				disabled="#{supervisorController.selecionado==null}"
+				onclick="return confirm('Tem certeza que deseja excluir?')"></p:commandButton>
+			</p:panelGrid>
+
+			<p:dataTable var="o" value="#{supervisorController.lista}"
+				emptyMessage="Nada para mostrar!" selectionMode="single"
+				selection="#{supervisorController.selecionado}" rowKey="#{o.id}"
+				rows="10" paginator="true"
+				paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}
+				{LastPageLink} "
+				rowsPerPageTemplate="10,25,50,100"
+				currentPageReportTemplate="Listando de {startRecord} até {endRecord} de {totalRecords}"
+				paginatorPosition="bottom">
+
+				<p:ajax event="rowSelect" update="consultar"></p:ajax>
+				<p:ajax event="rowUnselect" update="consultar"></p:ajax>
+
+				<p:column headerText="Código" sortBy="#{o.id}" filterBy="#{o.id}"
+					filterMatchMode="exact">
+					<p:outputLabel value="#{o.id}"></p:outputLabel>
+				</p:column>
+				<p:column headerText="Nome" sortBy="#{o.id}" filterBy="#{o.id}"
+					filterMatchMode="contains">
+					<p:outputLabel value="#{o.nome}"></p:outputLabel>
+				</p:column>
+			</p:dataTable>
+		</h:form>
+	</p:panel>
+
+	<!-- Painel de edição -->
+	<p:panel header="Cadastro de supervisores" id="editar" visible="#{supervisorController.editando}">
+		<h:form>
+			<p:growl></p:growl>
+			<p:panelGrid columns="3" layout="grid"
+			columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+			contentStyleClass="p-align-baseline ui-fluid">
+
+				<p:outputLabel value="Nome"></p:outputLabel>
+				<p:outputLabel value="Celular"></p:outputLabel>
+				<p:outputLabel value="E-mail"></p:outputLabel>
+
+				<p:inputText value="#{supervisorController.selecionado.nome}"></p:inputText>
+
+				<p:inputMask value="#{supervisorController.selecionado.celular}" mask="(99) 99999-9999" />
+
+				<p:inputText value="#{supervisorController.selecionado.email}"></p:inputText>
+
+				<p:outputLabel value="Senha"></p:outputLabel>
+				<p:outputLabel value="CPF"></p:outputLabel>
+				<p:outputLabel value="RG"></p:outputLabel>
+
+				<p:inputText value="#{supervisorController.selecionado.senha}" type="password"></p:inputText>
+
+				<p:inputMask id="CPF"
+					value="#{supervisorController.selecionado.cpf}"
+					mask="999.999.999-99" />
+
+				<p:inputMask id="RG" value="#{supervisorController.selecionado.rg}"
+					mask="99.999.999-9" required="true" requiredMessage="RG Inválido"></p:inputMask>
+
+				<p:outputLabel value="#{supervisorController.selecionado.id != null ? 'Data inativo':''}" />
+				<p:outputLabel value="" />
+				<p:outputLabel value="" />
+
+				<p:calendar
+						value="#{supervisorController.selecionado.dataInativo}"
+						pattern="dd/MM/yyyy" rendered="#{supervisorController.selecionado.id != null}"></p:calendar>
+
+			</p:panelGrid>
+
+			<p:panel>
+			<p:commandButton value="Salvar"
+				action="#{supervisorController.salvar}" update="consultar editar"
+				icon="pi pi-save"></p:commandButton>
+			<p:commandButton value="Cancelar"
+				action="#{supervisorController.cancelar}" immediate="true"
+				icon="pi pi-times" update="consultar editar"></p:commandButton>
+			</p:panel>
+
+		</h:form>
+	</p:panel>
+</h:body>
+</html>

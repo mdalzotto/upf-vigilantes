@@ -1,0 +1,40 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+</h:head>
+
+<h:body>
+
+    <h:form id="formFiltro" target="_blank">
+        <p:growl></p:growl>
+
+        <p:panelGrid columns="3" layout="grid"
+                     columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+                     contentStyleClass="p-align-baseline ui-fluid">
+
+            <p:outputLabel value="Data Hora Inicial"></p:outputLabel>
+            <p:outputLabel value="Data Hora Final"></p:outputLabel>
+            <p:outputLabel value=""></p:outputLabel>
+
+            <p:calendar
+                    value="#{ocorrenciasDoMesReportController.dataIni}"
+                    pattern="dd/MM/yyyy HH:mm:ss"></p:calendar>
+
+            <p:calendar
+                    value="#{ocorrenciasDoMesReportController.dataFim}"
+                    pattern="dd/MM/yyyy HH:mm:ss"></p:calendar>
+        </p:panelGrid>
+            <p:panel>
+                <p:commandButton value="Gerar" ajax="false"
+                                 action="#{ocorrenciasDoMesReportController.gerar}"
+                                 icon="pi pi-print"></p:commandButton>
+            </p:panel>
+
+    </h:form>
+
+</h:body>
+</html>

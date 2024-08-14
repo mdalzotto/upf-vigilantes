@@ -1,0 +1,51 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+<h:body onload="#{ocorrenciaDataLocalController.init()}">
+    <!-- Painel de consulta -->
+    <p:panel header="Data/Local de ocorrências" id="consultar"
+             visible="#{!ocorrenciaDataLocalController.editando}">
+        <h:form>
+            <p:dataTable var="o" value="#{ocorrenciaDataLocalController.lista}"
+                         emptyMessage="Nada para mostrar!" selectionMode="single"
+                         selection="#{ocorrenciaDataLocalController.selecionado}"
+                         rowKey="#{o.id}" rows="10" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}
+				{LastPageLink} "
+                         rowsPerPageTemplate="10,25,50,100"
+                         currentPageReportTemplate="Listando de {startRecord} até {endRecord} de {totalRecords}"
+                         paginatorPosition="bottom">
+
+                <p:ajax event="rowSelect" update="consultar"></p:ajax>
+                <p:ajax event="rowUnselect" update="consultar"></p:ajax>
+
+                <p:column headerText="Código" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="exact">
+                    <p:outputLabel value="#{o.id}"></p:outputLabel>
+                </p:column>
+
+                <p:column headerText="Data" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="contains">
+                    <p:outputLabel value="#{o.data}"></p:outputLabel>
+                </p:column>
+
+                <p:column headerText="Ocorrência na data" sortBy="#{o.id}"
+                          filterBy="#{o.id}" filterMatchMode="contains">
+                    <p:outputLabel value="#{o.ocorrenciaNaData}"></p:outputLabel>
+                </p:column>
+
+                <p:column headerText="Tipo de ocorrência" sortBy="#{o.id}"
+                          filterBy="#{o.id}" filterMatchMode="contains">
+                    <p:outputLabel value="#{o.tipoOcorrencia.descricao}"></p:outputLabel>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:panel>
+
+</h:body>
+</html>

@@ -1,0 +1,66 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+
+<h:head>
+</h:head>
+
+<h:body onload="#{boletoOcorrenciaController.init()}">
+    <!-- Painel de edição -->
+    <p:dialog header="Tipos" id="tipos" widgetVar="tipos" modal="true">
+        <h:form id="formEditTipos" enctype="multipart/form-data" >
+            <p:growl></p:growl>
+            <p:panelGrid columns="3" layout="grid"
+                         columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+                         contentStyleClass="p-align-baseline ui-fluid">
+
+                <p:outputLabel value="Anexo"></p:outputLabel>
+                <p:outputLabel value="Tipo Ocorrencia"/>
+                <p:outputLabel value=""/>
+
+                <p:inputText value="#{boletoOcorrenciaController.tipoSelecionado.anexo}"></p:inputText>
+
+
+                <p:autoComplete dropdown="true" multiple="false" size="30"
+                                forceSelection="true" var="tipoOcorrencia" itemLabel="#{tipoOcorrencia.descricao}"
+                                itemValue="#{tipoOcorrencia}"
+                                value="#{boletoOcorrenciaController.tipoSelecionado.tipoOcorrencia}"
+                                converter="tipoOcorrenciaConverter"
+                                completeMethod="#{boletoOcorrenciaController.tipoOcorrencias}"/>
+                                
+                                
+
+			<p:outputLabel for="anexararq" value="Anexo:" />
+			<p:fileUpload id="anexararq" value="#{boletoOcorrenciaController.file}"
+				mode="simple" skinSimple="true" required="true" />
+			
+
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+                                
+            </p:panelGrid>
+
+            <p:panel>
+                <p:commandButton value="Salvar" ajax="false"
+                                 action="#{boletoOcorrenciaController.salvarTipo}"
+                                 update="formEdit:painelTiposList" icon="pi pi-save"
+                                 oncomplete="PF('tipos').hide();"
+                ></p:commandButton>
+                <p:commandButton value="Cancelar" action="#{boletoOcorrenciaController.cancelarTipo}"
+                                 oncomplete="PF('tipos').hide();"
+                                 immediate="true" icon="pi pi-times"></p:commandButton>
+            </p:panel>
+
+        </h:form>
+    </p:dialog>
+
+</h:body>
+</html>

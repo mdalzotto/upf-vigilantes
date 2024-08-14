@@ -1,0 +1,156 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://java.sun.com/jsf/facelets">
+
+<h:head>
+</h:head>
+
+<h:body onload="#{boletoOcorrenciaController.init()}">
+    <!-- Painel de consulta -->
+    <p:panel header="Cadastro de ocorrências" id="consultar"
+             visible="#{!boletoOcorrenciaController.editando}">
+        <h:form>
+            <p:commandButton value="Incluir"
+                             action="#{boletoOcorrenciaController.incluir}"
+                             update="consultar editar" icon="pi pi-plus"></p:commandButton>
+
+            <p:commandButton value="Alterar"
+                             action="#{boletoOcorrenciaController.alterar}"
+                             update="consultar editar" icon="pi pi-pencil"
+                             disabled="#{boletoOcorrenciaController.selecionado==null}"></p:commandButton>
+
+            <p:commandButton value="Excluir"
+                             action="#{boletoOcorrenciaController.excluir}" update="consultar"
+                             icon="pi pi-trash"
+                             disabled="#{boletoOcorrenciaController.selecionado==null}"
+                             onclick="return confirm('Tem certeza que deseja excluir?')"></p:commandButton>
+
+            <p:dataTable var="o" value="#{boletoOcorrenciaController.lista}"
+                         emptyMessage="Nada para mostrar!" selectionMode="single"
+                         selection="#{boletoOcorrenciaController.selecionado}"
+                         rowKey="#{o.id}" rows="10" paginator="true"
+                         paginatorTemplate="{CurrentPageReport} {RowsPerPageDropdown}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink}
+				{LastPageLink} "
+                         rowsPerPageTemplate="10,25,50,100"
+                         currentPageReportTemplate="Listando de {startRecord} até {endRecord} de {totalRecords}"
+                         paginatorPosition="bottom">
+
+                <p:ajax event="rowSelect" update="consultar"></p:ajax>
+                <p:ajax event="rowUnselect" update="consultar"></p:ajax>
+
+                <p:column headerText="Código" sortBy="#{o.id}" filterBy="#{o.id}"
+                          filterMatchMode="exact">
+                    <p:outputLabel value="#{o.id}"></p:outputLabel>
+                </p:column>
+                <p:column headerText="Descrição" sortBy="#{o.descricao}"
+                          filterBy="#{o.descricao}" filterMatchMode="contains">
+                    <p:outputLabel value="#{o.descricao}"></p:outputLabel>
+                </p:column>
+            </p:dataTable>
+        </h:form>
+    </p:panel>
+
+    <!-- Painel de edição -->
+    <p:panel header="Cadastro de ocorrências" id="editar" visible="#{boletoOcorrenciaController.editando}">
+
+
+        <h:form id="formEdit">
+            <p:growl></p:growl>
+
+            <p:panel>
+
+                <p:panelGrid columns="3" layout="grid"
+                             columnClasses="p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4, p-col-12 p-md-3 p-xl-2, p-col-12 p-md-9 p-xl-4"
+                             contentStyleClass="p-align-baseline ui-fluid">
+
+
+                    <p:outputLabel value="Data Hora"></p:outputLabel>
+                    <p:outputLabel value="Funcionario"/>
+                    <p:outputLabel value="Local"/>
+
+                    <p:calendar value="#{boletoOcorrenciaController.selecionado.dataHora}"
+                                pattern="dd/MM/yyyy HH:mm:ss"></p:calendar>
+
+                    <p:autoComplete dropdown="true" multiple="false" size="30"
+                                    forceSelection="true" var="funcionario"
+                                    itemLabel="#{funcionario.nome}" itemValue="#{funcionario}"
+                                    value="#{boletoOcorrenciaController.selecionado.funcionario}"
+                                    converter="funcionarioConverter"
+                                    completeMethod="#{boletoOcorrenciaController.funcionarios}"/>
+
+                    <p:autoComplete dropdown="true" multiple="false" size="30"
+                                    forceSelection="true" var="local" itemLabel="#{local.nome}"
+                                    itemValue="#{local}"
+                                    value="#{boletoOcorrenciaController.selecionado.local}"
+                                    converter="localConverter"
+                                    completeMethod="#{boletoOcorrenciaController.locais}"/>
+
+                    <p:outputLabel value="Descricao"></p:outputLabel>
+                    <p:outputLabel value=""/>
+                    <p:outputLabel value=""/>
+
+                    <p:inputTextarea value="#{boletoOcorrenciaController.selecionado.descricao}"></p:inputTextarea>
+
+                </p:panelGrid>
+
+                <p:panel id="painelTiposList">
+
+                    <p:panelGrid style="margin-bottom: 1em">
+                        <p:commandButton value="Incluir Tipo" immediate="false"
+                                         action="#{boletoOcorrenciaController.incluirTipo}"
+                                         oncomplete="PF('tipos').show();" update="tipos"
+                                         icon="pi pi-plus" style="margin-top: 1em"></p:commandButton>
+                    </p:panelGrid>
+
+                    <p:dataTable id="tabelaTipos" var="o" rowIndexVar="linha"
+                                 value="#{boletoOcorrenciaController.selecionado.boletoTipos}"
+                                 emptyMessage="Nada para mostrar!">
+
+                        <p:column headerText="Código" sortBy="#{o.id}" filterBy="#{o.id}"
+                                  filterMatchMode="exact">
+                            <p:outputLabel value="#{o.id}"></p:outputLabel>
+                        </p:column>
+                        <p:column headerText="Anexo" sortBy="#{o.anexo}"
+                                  filterBy="#{o.anexo}" filterMatchMode="contains">
+                            <p:outputLabel value="#{o.anexo}"></p:outputLabel>
+                        </p:column>
+
+                        <p:column>
+                            <p:commandButton value="Excluir" immediate="true"
+                                             action="#{boletoOcorrenciaController.excluirTipo(linha)}"
+                                             update=":formEdit:painelTiposList"
+                                             icon="pi pi-trash"></p:commandButton>
+                        </p:column>
+                        
+                        <p:column>
+                            <p:commandButton value="Abrir" immediate="true" ajax="false"
+                                             action="#{boletoOcorrenciaController.download(linha)}"
+                                             icon="pi pi-trash"
+                                             onclick="document.getElementById('formEdit').target='_blank';"
+                                             ></p:commandButton>
+                        </p:column>                        
+
+                    </p:dataTable>
+                </p:panel>
+
+            </p:panel>
+
+            <p:panel>
+                <p:commandButton value="Salvar"
+                                 action="#{boletoOcorrenciaController.salvar}"
+                                 update="consultar editar" icon="pi pi-save"></p:commandButton>
+                <p:commandButton value="Cancelar"
+                                 action="#{boletoOcorrenciaController.cancelar}" immediate="true"
+                                 icon="pi pi-times" update="consultar editar"></p:commandButton>
+            </p:panel>
+
+        </h:form>
+
+    </p:panel>
+
+    <ui:include src="BoletoTipoForm.xhtml"></ui:include>
+
+</h:body>
+</html>
